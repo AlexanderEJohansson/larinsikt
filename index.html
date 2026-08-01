@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="sv" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Yrkesmoduler för service och bemötande i skolan — tydliga steg, checklistor och lärarstöd. Lärinsikt AB.">
+  <title>Lärinsikt — Yrkesmoduler för service och bemötande</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            lb: { DEFAULT: '#2d5a87', dark: '#1e3a5f', light: '#4a7ab5' },
+            lg: { DEFAULT: '#3a8c5c', dark: '#2d6b4f', light: '#5aab7d' },
+          },
+          fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :focus-visible{outline:3px solid #2d5a87;outline-offset:3px;border-radius:4px}
+    html{font-size:18px;scroll-behavior:smooth}
+    body{font-family:'Inter',system-ui,sans-serif;background:#fafaf9;color:#1e3a5f;line-height:1.6}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes checkPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+    @keyframes slideDown{from{max-height:0;opacity:0}to{max-height:1200px;opacity:1}}
+    .animate-fade-in-up{animation:fadeInUp .5s ease-out forwards}
+    .check-pop{animation:checkPop .3s ease-out}
+    .step-trigger{cursor:pointer;user-select:none;transition:background .2s;border-radius:.75rem}
+    .step-trigger:hover{background:#f0f4ff}
+    .step-trigger:focus-visible{background:#f0f4ff}
+    .step-panel{border-left:3px solid #3a8c5c;margin-left:1.75rem;padding-left:1.5rem;margin-top:.75rem;animation:slideDown .35s ease-out;overflow:hidden}
+    .modal-overlay{position:fixed;inset:0;background:rgba(30,58,95,.85);backdrop-filter:blur(4px);z-index:50;display:flex;align-items:center;justify-content:center;padding:1rem}
+    .modal-overlay[hidden]{display:none}
+    .modal-box{background:#fafaf9;border-radius:1rem;max-width:880px;width:100%;max-height:90vh;overflow-y:auto;padding:2rem;position:relative}
+    @media print{
+      .no-print,.teacher-panel,header,nav,.cm-modal,#cm-feedback{display:none!important}
+      body{background:white;color:black;font-size:11pt}
+      .check-item{border:1px solid #999;padding:.5rem;margin-bottom:.4rem;page-break-inside:avoid}
+      h1,h2,h3{page-break-after:avoid}
+      a[href]:after{content:""}
+      #cm-checklist-section{padding:0!important;margin:0!important}
+    }
+    ::-webkit-scrollbar{width:10px}
+    ::-webkit-scrollbar-track{background:#fafaf9}
+    ::-webkit-scrollbar-thumb{background:#2d5a87;border-radius:5px}
+    ::-webkit-scrollbar-thumb:hover{background:#1e3a5f}
+    .btn-primary{background:#2d5a87;color:white;padding:.875rem 1.75rem;border-radius:.75rem;font-weight:600;font-size:1rem;transition:background .2s,transform .15s;display:inline-flex;align-items:center;gap:.5rem;min-height:48px;border:none;cursor:pointer;text-decoration:none}
+    .btn-primary:hover{background:#1e3a5f;transform:translateY(-1px)}
+    .btn-primary:active{transform:translateY(0)}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .btn-secondary{background:white;color:#2d5a87;padding:.875rem 1.75rem;border:2px solid #2d5a87;border-radius:.75rem;font-weight:600;font-size:1rem;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;min-height:48px;cursor:pointer;text-decoration:none}
+    .btn-secondary:hover{background:#2d5a87;color:white}
+    .btn-tertiary{background:transparent;color:#2d6b4f;padding:.5rem 1rem;border-radius:.5rem;font-weight:500;font-size:.95rem;transition:background .2s;display:inline-flex;align-items:center;gap:.4rem;min-height:40px;border:none;cursor:pointer;text-decoration:none}
+    .btn-tertiary:hover{background:#f0fff4}
+    .callout{padding:1rem 1.25rem;border-radius:0 .5rem .5rem 0;margin-top:.75rem;border-left:4px solid}
+    .callout-autism{background:#eef2ff;border-color:#5a7ab5}
+    .callout-hearing{background:#f0fff4;border-color:#3a8c5c}
+    .callout-language{background:#fff8f0;border-color:#c47a1a}
+    .callout-why{background:#f8fafc;border-color:#64748b}
+    .callout-visual{background:#fef9f0;border-color:#d4a155;font-style:italic}
+    .teacher-panel{border:2px dashed #2d5a87;background:#f0f4ff;padding:1.5rem;border-radius:1rem;margin-top:1.5rem;display:none}
+    .teacher-panel.visible{display:block}
+    .quiz-option{cursor:pointer;padding:1rem 1.25rem;border:2px solid #e2e8f0;border-radius:.75rem;margin-top:.5rem;transition:all .2s;display:flex;align-items:center;gap:.75rem;width:100%;text-align:left;background:white;color:#1e3a5f;font-size:1rem}
+    .quiz-option:hover:not(:disabled){border-color:#2d5a87;background:#f0f4ff}
+    .quiz-option.selected{border-color:#3a8c5c;background:#f0fff4}
+    .quiz-option.correct{border-color:#3a8c5c;background:#d1fae5}
+    .quiz-option.incorrect{border-color:#c47a1a;background:#fef3c7}
+    .quiz-option:disabled{cursor:default}
+    .check-item{cursor:pointer;padding:1rem;border:2px solid #e2e8f0;border-radius:.75rem;margin-bottom:.5rem;transition:all .2s;display:flex;align-items:center;gap:.875rem;background:white}
+    .check-item:hover{border-color:#2d5a87;background:#f8fbff}
+    .check-item.checked{background:#f0fff4;border-color:#3a8c5c}
+    .check-item .checkbox{width:28px;height:28px;border:2px solid #94a3b8;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:white;transition:all .2s}
+    .check-item.checked .checkbox{background:#3a8c5c;border-color:#3a8c5c}
+    .check-item .checkbox svg{opacity:0;transition:opacity .2s}
+    .check-item.checked .checkbox svg{opacity:1}
+    .step-circle{width:3rem;height:3rem;border-radius:50%;background:#2d5a87;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.125rem;flex-shrink:0;transition:transform .2s,background .2s}
+    .step-circle.active{background:#3a8c5c;transform:scale(1.08)}
+    .step-circle.done{background:#64748b}
+    .progress-ring{transform:rotate(-90deg)}
+    .progress-ring circle{transition:stroke-dashoffset .5s ease}
+    .skip-link{position:absolute;top:-100px;left:1rem;background:#2d5a87;color:white;padding:.75rem 1.5rem;border-radius:.5rem;font-weight:600;z-index:100;transition:top .2s}
+    .skip-link:focus{top:1rem}
+    .speed-slider{width:100%;height:8px;-webkit-appearance:none;appearance:none;background:#e2e8f0;border-radius:4px;outline:none}
+    .speed-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;background:#2d5a87;border-radius:50%;cursor:pointer}
+    .speed-slider::-moz-range-thumb{width:24px;height:24px;background:#2d5a87;border-radius:50%;cursor:pointer;border:none}
+    .pause-marker{background:#fef3c7;border:2px solid #d4a155;border-radius:.5rem;padding:.75rem;margin:.5rem 0}
+    .pause-marker.highlight{box-shadow:0 0 0 4px rgba(212,161,85,.3)}
+    .subtitle-track{background:#1e3a5f;color:white;padding:.75rem 1rem;border-radius:.5rem;font-size:1.05rem;line-height:1.4;min-height:60px}
+    details>summary{cursor:pointer;list-style:none}
+    details>summary::-webkit-details-marker{display:none}
+    details>summary::after{content:"▼";float:right;transition:transform .2s;color:#64748b}
+    details[open]>summary::after{transform:rotate(180deg)}
+    .feedback-success{background:#d1fae5;border:2px solid #3a8c5c;color:#1e3a5f;padding:1rem;border-radius:.75rem;margin-top:1rem}
+  </style>
+</head>
+<body class="min-h-screen">
+  <a href="#main" class="skip-link">Hoppa till huvudinnehåll</a>
+
+  <!-- ==========================================
+       SECTION: STICKY HEADER
+       ========================================== -->
+  <header role="banner" class="cm-header sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm no-print">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <a href="#" class="cm-logo flex items-center gap-3 min-h-[48px]" aria-label="Lärinsikt - Hem">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#2d5a87"/><path d="M11 20 L18 27 L29 14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="font-bold text-xl text-lb-dark">Lärinsikt</span>
+      </a>
+      <nav role="navigation" aria-label="Huvudnavigation" class="cm-nav hidden lg:flex items-center gap-1">
+        <a href="#cm-overview" class="px-3 py-2 text-lb-dark hover:text-lb font-medium rounded-lg hover:bg-blue-50 min-h-[44px] flex items-center">Om projektet</a>
+        <a href="#cm-module" class="px-3 py-2 text-lb-dark hover:text-lb font-medium rounded-lg hover:bg-blue-50 min-h-[44px] flex items-center">Moduler</a>
+        <a href="#cm-teacher" class="px-3 py-2 text-lb-dark hover:text-lb font-medium rounded-lg hover:bg-blue-50 min-h-[44px] flex items-center">För lärare</a>
+        <a href="#cm-feedback" class="px-3 py-2 text-lb-dark hover:text-lb font-medium rounded-lg hover:bg-blue-50 min-h-[44px] flex items-center">Kontakt</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button class="btn-secondary text-sm !py-2 !px-4 !min-h-[44px]" onclick="alert('Inloggning kommer snart. Detta är prototyp v0.1.')" aria-label="Logga in som elev eller lärare">Logga in</button>
+        <a href="#cm-module" class="btn-primary text-sm !py-2 !px-4 !min-h-[44px]" aria-label="Starta interaktiv demo">Starta demo</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       SECTION: HERO
+       ========================================== -->
+  <section class="cm-hero relative overflow-hidden" aria-labelledby="hero-title">
+    <div class="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+      <div class="animate-fade-in-up">
+        <p class="text-sm font-semibold text-lg-dark tracking-wide mb-3">För yrkeslärare · service &amp; bemötande · GY25</p>
+        <h1 id="hero-title" class="text-4xl md:text-5xl lg:text-6xl font-bold text-lb-dark leading-tight mb-6">
+          Första mötet med kunden — en modul ni kan köra i klassrummet
+        </h1>
+        <p class="text-xl text-slate-600 mb-8 max-w-xl">
+          Steg, checklista och quiz för elever. Pedagogiskt stöd för dig som undervisar.
+          Byggd för tydlighet och lugn — även när klassen är blandad.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="#cm-module" class="btn-primary">
+            Öppna modul 1
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#cm-teacher" class="btn-secondary">Till lärarstödet</a>
+        </div>
+      </div>
+      <div class="hidden md:flex justify-center" aria-hidden="true">
+        <svg viewBox="0 0 400 400" class="w-full max-w-md">
+          <circle cx="200" cy="200" r="180" fill="#f0f4ff"/>
+          <circle cx="200" cy="200" r="140" fill="#eef2ff"/>
+          <g transform="translate(200,200)">
+            <circle cx="0" cy="-30" r="40" fill="#2d5a87"/>
+            <path d="M-50 50 Q-50 0 0 0 Q50 0 50 50 L50 90 L-50 90 Z" fill="#2d5a87"/>
+            <circle cx="-12" cy="-35" r="4" fill="white"/>
+            <circle cx="12" cy="-35" r="4" fill="white"/>
+            <path d="M-10 -20 Q0 -12 10 -20" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+          </g>
+          <g transform="translate(110,260)" opacity="0.7">
+            <rect width="40" height="50" rx="6" fill="#3a8c5c"/>
+            <path d="M10 15 L30 15 M10 25 L25 25 M10 35 L28 35" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </g>
+          <g transform="translate(260,265)" opacity="0.7">
+            <circle r="22" fill="#5aab7d"/>
+            <path d="M-10 0 L-3 7 L10 -6" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+<main id="main" role="main">
+  <!-- ==========================================
+       SECTION: PROJECT OVERVIEW
+       ========================================== -->
+  <section id="cm-overview" class="py-16 md:py-20 bg-white border-y border-slate-200" aria-labelledby="overview-title">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 id="overview-title" class="text-3xl md:text-4xl font-bold text-lb-dark mb-4">Om projektet</h2>
+      <p class="text-lg text-slate-600 mb-10 max-w-3xl">
+        Lärinsikt är ett pilotprojekt 2027–2029 som bygger interaktiva yrkesmoduler för gymnasieskolans handels- och serviceprogram.
+      </p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+          <div class="w-12 h-12 bg-lb/10 rounded-xl flex items-center justify-center mb-4 text-lb-dark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="font-semibold text-lb-dark mb-2">Tydliga moduler</h3>
+          <p class="text-sm text-slate-600">Steg-för-steg-guider med video, övningar och självkontroll.</p>
+        </div>
+        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+          <div class="w-12 h-12 bg-lg/10 rounded-xl flex items-center justify-center mb-4 text-lg-dark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3"/><path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="font-semibold text-lb-dark mb-2">För alla elever</h3>
+          <p class="text-sm text-slate-600">Anpassat för autism, hörselnedsättning och språkstörning.</p>
+        </div>
+        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+          <div class="w-12 h-12 bg-lb/10 rounded-xl flex items-center justify-center mb-4 text-lb-dark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 7v6c0 5 4 9 8 9s8-4 8-9V7l-8-5z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="font-semibold text-lb-dark mb-2">Kopplat till GY25</h3>
+          <p class="text-sm text-slate-600">Direkt bedömningsstöd i läroplanen och APL-uppgifter.</p>
+        </div>
+        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+          <div class="w-12 h-12 bg-lg/10 rounded-xl flex items-center justify-center mb-4 text-lg-dark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="font-semibold text-lb-dark mb-2">Eleven styr</h3>
+          <p class="text-sm text-slate-600">Självständigt lärande i egen takt, med stöd när det behövs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SECTION: MODULE 1 - INTERACTIVE DEMO
+       ========================================== -->
+  <section id="cm-module" class="py-16 md:py-20" aria-labelledby="module-title">
+    <div class="max-w-5xl mx-auto px-4">
+      <!-- Module header with teacher view toggle -->
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-10">
+        <div>
+          <p class="text-sm font-semibold text-lg-dark uppercase tracking-wider mb-2">Modul 1 · Service & bemötande · GY25</p>
+          <h2 id="module-title" class="text-3xl md:text-4xl font-bold text-lb-dark">Första mötet med kunden</h2>
+          <p class="text-slate-600 mt-3 max-w-2xl">Lär dig steg för steg hur du möter en kund på ett professionellt och tryggt sätt.</p>
+        </div>
+        <button id="cm-teacher-toggle" class="btn-secondary !py-2 !px-4 text-sm" aria-pressed="false" onclick="toggleTeacherView()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.5C12 4 10 2 7.5 2S3 4 3 6.5 5 11 7.5 11 12 9 12 6.5zM21 6.5C21 4 19 2 16.5 2S12 4 12 6.5 14 11 16.5 11 21 9 21 6.5zM3 22v-2c0-2.5 2-4.5 4.5-4.5h2c2.5 0 4.5 2 4.5 4.5v2M12 22v-2c0-2.5 2-4.5 4.5-4.5h2c2.5 0 4.5 2 4.5 4.5v2" stroke-linecap="round"/></svg>
+          <span id="cm-view-label">Visa lärarvy</span>
+        </button>
+      </div>
+
+      <!-- 5-Step Accordion -->
+      <h3 class="text-xl font-semibold text-lb-dark mb-4 mt-8">Steg-för-steg-guide</h3>
+      <div id="cm-steps" class="mb-12">
+
+      <div class="step-item bg-white rounded-2xl border border-slate-200 mb-3 overflow-hidden shadow-sm">
+        <button id="step-trigger-1" class="step-trigger w-full px-5 py-4 flex items-center gap-4 text-left"
+                aria-expanded="false" aria-controls="step-panel-1"
+                onclick="toggleStep(1)">
+          <div class="step-circle" data-step="1">1</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg md:text-xl font-semibold text-lb-dark">Förbered dig</h3>
+            <p class="text-sm text-slate-500 mt-1">Innan kunden kommer, stå upp, ta ett djupt andetag och ge dig själv ett lugnt le...</p>
+          </div>
+          <div class="text-lg-dark hidden md:block"><svg viewBox="0 0 64 64" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="20" r="9"/><path d="M14 56 Q14 38 32 38 Q50 38 50 56"/><path d="M22 18 Q24 14 28 16 M42 18 Q40 14 36 16"/></svg></div>
+          <svg class="step-chevron flex-shrink-0 transition-transform" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div id="step-panel-1" class="step-panel px-5 pb-5" hidden role="region" aria-labelledby="step-trigger-1">
+          <p class="text-base md:text-lg text-lb-dark font-medium mb-3 pt-3">Innan kunden kommer, stå upp, ta ett djupt andetag och ge dig själv ett lugnt leende.</p>
+
+          <div class="callout callout-why">
+            <h4 class="font-semibold text-slate-700 text-sm uppercase tracking-wide mb-1">Varför är detta viktigt?</h4>
+            <p class="text-slate-700">Fysisk beredskap skapar mental beredskap. När du står upp och ler aktiveras kroppens lugnssystem.</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-3 mt-4">
+            <div class="callout callout-autism !mt-0">
+              <h4 class="font-semibold text-blue-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity="0.2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+                Tips · autism
+              </h4>
+              <p class="text-sm text-slate-700">Förberedelser på förhand minskar osäkerhet. Läs instruktionerna flera gånger innan.</p>
+            </div>
+            <div class="callout callout-hearing !mt-0">
+              <h4 class="font-semibold text-green-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9c0-3 2-7 7-7s7 4 7 7-2 4-2 7-1 4-3 4-3-2-3-4-2-3-3-3-3 1-3 3-1 4-3 4S2 17 2 13s2-3 2-4z" stroke-linejoin="round"/></svg>
+                Tips · hörsel
+              </h4>
+              <p class="text-sm text-slate-700">Se till att din hörapparat är på och fungerar. Ha pennan redo för anteckningar.</p>
+            </div>
+            <div class="callout callout-language !mt-0">
+              <h4 class="font-semibold text-amber-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9c-1.5 0-3-.5-4-1l-5 1 1-5c-1-1-1-3-1-4z" stroke-linejoin="round"/></svg>
+                Tips · språk
+              </h4>
+              <p class="text-sm text-slate-700">Läs instruktionerna högt för dig själv. Det hjälper dig att processa information bättre.</p>
+            </div>
+          </div>
+
+          <details class="mt-4">
+            <summary class="font-semibold text-lb-dark py-2 px-3 hover:bg-slate-50 rounded-lg">
+              Visa hur det ser ut
+            </summary>
+            <div class="callout callout-visual mt-2">
+              <p class="text-slate-700">En person står upp vid en disk, andas djupt och ler lugnt.</p>
+            </div>
+          </details>
+
+          <div class="teacher-panel" data-teacher-panel>
+            <h4 class="font-semibold text-lb-dark mb-2 flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-2 7H3l5.5 4-2 7 5.5-4 5.5 4-2-7L21 9h-7z"/></svg>
+              För läraren
+            </h4>
+            <p class="text-sm text-slate-700">
+              <strong>Bedömning:</strong> Eleven kan beskriva och visa steget i praktisk situation.
+              <strong class="block mt-2">APL:</strong> Be eleven öva detta steg minst 5 gånger på praktikplatsen och dokumentera i checklistan.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item bg-white rounded-2xl border border-slate-200 mb-3 overflow-hidden shadow-sm">
+        <button id="step-trigger-2" class="step-trigger w-full px-5 py-4 flex items-center gap-4 text-left"
+                aria-expanded="false" aria-controls="step-panel-2"
+                onclick="toggleStep(2)">
+          <div class="step-circle" data-step="2">2</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg md:text-xl font-semibold text-lb-dark">Hälsa kunden</h3>
+            <p class="text-sm text-slate-500 mt-1">Titta kunden i ögonen (eller mot munnen vid behov) och säg "Hej, hur kan jag hjä...</p>
+          </div>
+          <div class="text-lg-dark hidden md:block"><svg viewBox="0 0 64 64" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="22" cy="22" r="8"/><circle cx="42" cy="22" r="8"/><path d="M14 50 Q14 36 22 36 Q26 36 26 40 M50 50 Q50 36 42 36 Q38 36 38 40"/><path d="M28 22 L36 22"/></svg></div>
+          <svg class="step-chevron flex-shrink-0 transition-transform" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div id="step-panel-2" class="step-panel px-5 pb-5" hidden role="region" aria-labelledby="step-trigger-2">
+          <p class="text-base md:text-lg text-lb-dark font-medium mb-3 pt-3">Titta kunden i ögonen (eller mot munnen vid behov) och säg "Hej, hur kan jag hjälpa dig?"</p>
+
+          <div class="callout callout-why">
+            <h4 class="font-semibold text-slate-700 text-sm uppercase tracking-wide mb-1">Varför är detta viktigt?</h4>
+            <p class="text-slate-700">Första intrycket avgör hela samtalet. En vänlig hälsning skapar förtroende.</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-3 mt-4">
+            <div class="callout callout-autism !mt-0">
+              <h4 class="font-semibold text-blue-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity="0.2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+                Tips · autism
+              </h4>
+              <p class="text-sm text-slate-700">Det är okej att inte veta exakt vad du ska säga. "Hej" och "Hur kan jag hjälpa?" räcker långt.</p>
+            </div>
+            <div class="callout callout-hearing !mt-0">
+              <h4 class="font-semibold text-green-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9c0-3 2-7 7-7s7 4 7 7-2 4-2 7-1 4-3 4-3-2-3-4-2-3-3-3-3 1-3 3-1 4-3 4S2 17 2 13s2-3 2-4z" stroke-linejoin="round"/></svg>
+                Tips · hörsel
+              </h4>
+              <p class="text-sm text-slate-700">Artikulera tydligt. Vänd dig mot kunden så att ljudet kommer fram.</p>
+            </div>
+            <div class="callout callout-language !mt-0">
+              <h4 class="font-semibold text-amber-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9c-1.5 0-3-.5-4-1l-5 1 1-5c-1-1-1-3-1-4z" stroke-linejoin="round"/></svg>
+                Tips · språk
+              </h4>
+              <p class="text-sm text-slate-700">Säg samma sak på två olika sätt om du är osäker: "God dag" och "Hej, vad kan jag hjälpa med?"</p>
+            </div>
+          </div>
+
+          <details class="mt-4">
+            <summary class="font-semibold text-lb-dark py-2 px-3 hover:bg-slate-50 rounded-lg">
+              Visa hur det ser ut
+            </summary>
+            <div class="callout callout-visual mt-2">
+              <p class="text-slate-700">En person vänder sig mot kunden och hälsar med ett leende.</p>
+            </div>
+          </details>
+
+          <div class="teacher-panel" data-teacher-panel>
+            <h4 class="font-semibold text-lb-dark mb-2 flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-2 7H3l5.5 4-2 7 5.5-4 5.5 4-2-7L21 9h-7z"/></svg>
+              För läraren
+            </h4>
+            <p class="text-sm text-slate-700">
+              <strong>Bedömning:</strong> Eleven kan beskriva och visa steget i praktisk situation.
+              <strong class="block mt-2">APL:</strong> Be eleven öva detta steg minst 5 gånger på praktikplatsen och dokumentera i checklistan.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item bg-white rounded-2xl border border-slate-200 mb-3 overflow-hidden shadow-sm">
+        <button id="step-trigger-3" class="step-trigger w-full px-5 py-4 flex items-center gap-4 text-left"
+                aria-expanded="false" aria-controls="step-panel-3"
+                onclick="toggleStep(3)">
+          <div class="step-circle" data-step="3">3</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg md:text-xl font-semibold text-lb-dark">Ställ öppna frågor</h3>
+            <p class="text-sm text-slate-500 mt-1">Fråga "Vad kan jag hjälpa dig med idag?" istället för ja/nej-frågor....</p>
+          </div>
+          <div class="text-lg-dark hidden md:block"><svg viewBox="0 0 64 64" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 18 Q12 12 18 12 L46 12 Q52 12 52 18 L52 38 Q52 44 46 44 L34 44 L26 52 L26 44 L18 44 Q12 44 12 38 Z"/><path d="M28 22 Q28 18 32 18 Q36 18 36 22 Q36 26 32 28 L32 32"/><circle cx="32" cy="38" r="1.5" fill="currentColor"/></svg></div>
+          <svg class="step-chevron flex-shrink-0 transition-transform" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div id="step-panel-3" class="step-panel px-5 pb-5" hidden role="region" aria-labelledby="step-trigger-3">
+          <p class="text-base md:text-lg text-lb-dark font-medium mb-3 pt-3">Fråga "Vad kan jag hjälpa dig med idag?" istället för ja/nej-frågor.</p>
+
+          <div class="callout callout-why">
+            <h4 class="font-semibold text-slate-700 text-sm uppercase tracking-wide mb-1">Varför är detta viktigt?</h4>
+            <p class="text-slate-700">Öppna frågor får kunden att känna sig hörd och förstådd.</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-3 mt-4">
+            <div class="callout callout-autism !mt-0">
+              <h4 class="font-semibold text-blue-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity="0.2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+                Tips · autism
+              </h4>
+              <p class="text-sm text-slate-700">Öppna frågor kan kännas svåra. Förbered 2-3 fraser som alltid fungerar.</p>
+            </div>
+            <div class="callout callout-hearing !mt-0">
+              <h4 class="font-semibold text-green-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9c0-3 2-7 7-7s7 4 7 7-2 4-2 7-1 4-3 4-3-2-3-4-2-3-3-3-3 1-3 3-1 4-3 4S2 17 2 13s2-3 2-4z" stroke-linejoin="round"/></svg>
+                Tips · hörsel
+              </h4>
+              <p class="text-sm text-slate-700">Lyssna aktivt och nicka. Be om repetition om något var otydligt.</p>
+            </div>
+            <div class="callout callout-language !mt-0">
+              <h4 class="font-semibold text-amber-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9c-1.5 0-3-.5-4-1l-5 1 1-5c-1-1-1-3-1-4z" stroke-linejoin="round"/></svg>
+                Tips · språk
+              </h4>
+              <p class="text-sm text-slate-700">Skriv ner kundens ärende om du behöver. Det är okej att be om tålamod.</p>
+            </div>
+          </div>
+
+          <details class="mt-4">
+            <summary class="font-semibold text-lb-dark py-2 px-3 hover:bg-slate-50 rounded-lg">
+              Visa hur det ser ut
+            </summary>
+            <div class="callout callout-visual mt-2">
+              <p class="text-slate-700">En person håller ett block och ställer en fråga, kunden svarar.</p>
+            </div>
+          </details>
+
+          <div class="teacher-panel" data-teacher-panel>
+            <h4 class="font-semibold text-lb-dark mb-2 flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-2 7H3l5.5 4-2 7 5.5-4 5.5 4-2-7L21 9h-7z"/></svg>
+              För läraren
+            </h4>
+            <p class="text-sm text-slate-700">
+              <strong>Bedömning:</strong> Eleven kan beskriva och visa steget i praktisk situation.
+              <strong class="block mt-2">APL:</strong> Be eleven öva detta steg minst 5 gånger på praktikplatsen och dokumentera i checklistan.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item bg-white rounded-2xl border border-slate-200 mb-3 overflow-hidden shadow-sm">
+        <button id="step-trigger-4" class="step-trigger w-full px-5 py-4 flex items-center gap-4 text-left"
+                aria-expanded="false" aria-controls="step-panel-4"
+                onclick="toggleStep(4)">
+          <div class="step-circle" data-step="4">4</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg md:text-xl font-semibold text-lb-dark">Lyssna aktivt och bekräfta</h3>
+            <p class="text-sm text-slate-500 mt-1">Låt kunden prata klart. Nicka och säg "Jag förstår" ibland....</p>
+          </div>
+          <div class="text-lg-dark hidden md:block"><svg viewBox="0 0 64 64" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 22 L26 22 L34 14 L34 50 L26 42 L14 42 Z"/><path d="M40 24 Q46 28 46 32 Q46 36 40 40"/><path d="M44 18 Q54 24 54 32 Q54 40 44 46"/></svg></div>
+          <svg class="step-chevron flex-shrink-0 transition-transform" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div id="step-panel-4" class="step-panel px-5 pb-5" hidden role="region" aria-labelledby="step-trigger-4">
+          <p class="text-base md:text-lg text-lb-dark font-medium mb-3 pt-3">Låt kunden prata klart. Nicka och säg "Jag förstår" ibland.</p>
+
+          <div class="callout callout-why">
+            <h4 class="font-semibold text-slate-700 text-sm uppercase tracking-wide mb-1">Varför är detta viktigt?</h4>
+            <p class="text-slate-700">Att känna sig lyssnad på är grundläggande för alla människor, särskilt för kunder i behov av hjälp.</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-3 mt-4">
+            <div class="callout callout-autism !mt-0">
+              <h4 class="font-semibold text-blue-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity="0.2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+                Tips · autism
+              </h4>
+              <p class="text-sm text-slate-700">Det kan vara svårt att inte avbryta. Räkna till 5 inom dig innan du svarar.</p>
+            </div>
+            <div class="callout callout-hearing !mt-0">
+              <h4 class="font-semibold text-green-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9c0-3 2-7 7-7s7 4 7 7-2 4-2 7-1 4-3 4-3-2-3-4-2-3-3-3-3 1-3 3-1 4-3 4S2 17 2 13s2-3 2-4z" stroke-linejoin="round"/></svg>
+                Tips · hörsel
+              </h4>
+              <p class="text-sm text-slate-700">Be om bekräftelse om du förstod rätt: "Så du säger att..." sammanfattar kort.</p>
+            </div>
+            <div class="callout callout-language !mt-0">
+              <h4 class="font-semibold text-amber-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9c-1.5 0-3-.5-4-1l-5 1 1-5c-1-1-1-3-1-4z" stroke-linejoin="round"/></svg>
+                Tips · språk
+              </h4>
+              <p class="text-sm text-slate-700">Använd kundens egna ord tillbaka: "Så du upplever att..." visar att du lyssnar.</p>
+            </div>
+          </div>
+
+          <details class="mt-4">
+            <summary class="font-semibold text-lb-dark py-2 px-3 hover:bg-slate-50 rounded-lg">
+              Visa hur det ser ut
+            </summary>
+            <div class="callout callout-visual mt-2">
+              <p class="text-slate-700">Två personer pratar, den ena nickar och antecknar.</p>
+            </div>
+          </details>
+
+          <div class="teacher-panel" data-teacher-panel>
+            <h4 class="font-semibold text-lb-dark mb-2 flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-2 7H3l5.5 4-2 7 5.5-4 5.5 4-2-7L21 9h-7z"/></svg>
+              För läraren
+            </h4>
+            <p class="text-sm text-slate-700">
+              <strong>Bedömning:</strong> Eleven kan beskriva och visa steget i praktisk situation.
+              <strong class="block mt-2">APL:</strong> Be eleven öva detta steg minst 5 gånger på praktikplatsen och dokumentera i checklistan.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item bg-white rounded-2xl border border-slate-200 mb-3 overflow-hidden shadow-sm">
+        <button id="step-trigger-5" class="step-trigger w-full px-5 py-4 flex items-center gap-4 text-left"
+                aria-expanded="false" aria-controls="step-panel-5"
+                onclick="toggleStep(5)">
+          <div class="step-circle" data-step="5">5</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg md:text-xl font-semibold text-lb-dark">Avsluta professionellt</h3>
+            <p class="text-sm text-slate-500 mt-1">Sammanfatta vad ni kommit överens om. Avsluta med: "Tack och ha en bra dag! Kom ...</p>
+          </div>
+          <div class="text-lg-dark hidden md:block"><svg viewBox="0 0 64 64" width="48" height="48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="20"/><path d="M22 32 L29 39 L42 24"/></svg></div>
+          <svg class="step-chevron flex-shrink-0 transition-transform" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div id="step-panel-5" class="step-panel px-5 pb-5" hidden role="region" aria-labelledby="step-trigger-5">
+          <p class="text-base md:text-lg text-lb-dark font-medium mb-3 pt-3">Sammanfatta vad ni kommit överens om. Avsluta med: "Tack och ha en bra dag! Kom tillbaka om du behöver mer hjälp."</p>
+
+          <div class="callout callout-why">
+            <h4 class="font-semibold text-slate-700 text-sm uppercase tracking-wide mb-1">Varför är detta viktigt?</h4>
+            <p class="text-slate-700">Ett professionellt avslut lämnar ett positivt minne och signalerar att kunden är viktig.</p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-3 mt-4">
+            <div class="callout callout-autism !mt-0">
+              <h4 class="font-semibold text-blue-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity="0.2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+                Tips · autism
+              </h4>
+              <p class="text-sm text-slate-700">En fast fras att avsluta med tar bort osäkerhet. Öva tills det känns naturligt.</p>
+            </div>
+            <div class="callout callout-hearing !mt-0">
+              <h4 class="font-semibold text-green-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9c0-3 2-7 7-7s7 4 7 7-2 4-2 7-1 4-3 4-3-2-3-4-2-3-3-3-3 1-3 3-1 4-3 4S2 17 2 13s2-3 2-4z" stroke-linejoin="round"/></svg>
+                Tips · hörsel
+              </h4>
+              <p class="text-sm text-slate-700">Se till att kunden förstått vad som beslutats. Fråga "Har du fler frågor?"</p>
+            </div>
+            <div class="callout callout-language !mt-0">
+              <h4 class="font-semibold text-amber-900 text-sm flex items-center gap-2 mb-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9c-1.5 0-3-.5-4-1l-5 1 1-5c-1-1-1-3-1-4z" stroke-linejoin="round"/></svg>
+                Tips · språk
+              </h4>
+              <p class="text-sm text-slate-700">Skriv ner vad kunden ska göra härnäst om det är aktuellt.</p>
+            </div>
+          </div>
+
+          <details class="mt-4">
+            <summary class="font-semibold text-lb-dark py-2 px-3 hover:bg-slate-50 rounded-lg">
+              Visa hur det ser ut
+            </summary>
+            <div class="callout callout-visual mt-2">
+              <p class="text-slate-700">Personen vinkar hejdå till kunden som går iväg nöjd.</p>
+            </div>
+          </details>
+
+          <div class="teacher-panel" data-teacher-panel>
+            <h4 class="font-semibold text-lb-dark mb-2 flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-2 7H3l5.5 4-2 7 5.5-4 5.5 4-2-7L21 9h-7z"/></svg>
+              För läraren
+            </h4>
+            <p class="text-sm text-slate-700">
+              <strong>Bedömning:</strong> Eleven kan beskriva och visa steget i praktisk situation.
+              <strong class="block mt-2">APL:</strong> Be eleven öva detta steg minst 5 gånger på praktikplatsen och dokumentera i checklistan.
+            </p>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Video Module -->
+      <h3 class="text-xl font-semibold text-lb-dark mb-4 mt-12 flex items-center gap-3">
+        <span class="w-10 h-10 bg-lb-dark text-white rounded-full flex items-center justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </span>
+        Videodemonstration
+      </h3>
+      <div class="bg-gradient-to-br from-lb-dark to-lb p-6 md:p-8 rounded-2xl text-white shadow-lg">
+        <div class="grid md:grid-cols-2 gap-6 items-center">
+          <div>
+            <h4 class="text-2xl font-bold mb-2">Se ett möte i verkligheten</h4>
+            <p class="text-blue-100 mb-4">Följ Anna när hon möter sin första kund. Med tydliga undertexter, paus-punkter och full transkription.</p>
+            <button class="btn-primary !bg-white !text-lb-dark" onclick="openVideoModal()" aria-label="Öppna video Första mötet">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Spela video (3:24)
+            </button>
+          </div>
+          <div class="relative bg-slate-900 rounded-xl aspect-video flex items-center justify-center cursor-pointer group" onclick="openVideoModal()">
+            <div class="absolute inset-0 bg-black/30 rounded-xl group-hover:bg-black/40 transition"></div>
+            <button aria-label="Spela video" class="relative w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="#2d5a87"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Checklist -->
+      <section id="cm-checklist-section" class="mt-16">
+        <h3 class="text-xl font-semibold text-lb-dark mb-4 flex items-center gap-3">
+          <span class="w-10 h-10 bg-lg-dark text-white rounded-full flex items-center justify-center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Min checklista
+        </h3>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-6 mb-6">
+            <div class="flex items-center gap-4">
+              <div class="relative w-24 h-24">
+                <svg class="progress-ring" width="96" height="96" viewBox="0 0 100 100" aria-hidden="true">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#e2e8f0" stroke-width="8"/>
+                  <circle id="check-progress-circle" cx="50" cy="50" r="45" fill="none" stroke="#3a8c5c" stroke-width="8"
+                          stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span id="check-progress-text" class="text-xl font-bold text-lb-dark" aria-live="polite">0/10</span>
+                </div>
+              </div>
+              <div>
+                <h4 class="font-semibold text-lb-dark">Dina framsteg</h4>
+                <p class="text-sm text-slate-500" id="check-progress-status">Börja kryssa i punkter när du har gjort dem.</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 no-print">
+              <button class="btn-tertiary" onclick="saveChecklist()" aria-label="Spara min checklista">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke-linejoin="round"/><path d="M17 21v-8H7v8M7 3v5h8" stroke-linejoin="round"/></svg>
+                Spara
+              </button>
+              <button class="btn-tertiary" onclick="loadChecklist()" aria-label="Ladda tidigare sparad checklista">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Ladda
+              </button>
+              <button class="btn-tertiary" onclick="window.print()" aria-label="Skriv ut checklista">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z" stroke-linejoin="round"/></svg>
+                Skriv ut
+              </button>
+            </div>
+          </div>
+
+          <ul id="cm-checklist" class="list-none p-0">
+
+        <li class="check-item" id="check-item-0" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(0)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(0);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag stod upp och log mot kunden</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(0);" aria-label="Markera punkt 1 som klarad">Jag klarade detta</button>
+        </li>
+
+        <li class="check-item" id="check-item-1" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(1)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(1);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag hälsade tydligt och vänligt</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(1);" aria-label="Markera punkt 2 som klarad">Jag klarade detta</button>
+        </li>
+
+        <li class="check-item" id="check-item-2" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(2)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(2);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag använde kundens namn om jag visste det</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(2);" aria-label="Markera punkt 3 som klarad">Jag klarade detta</button>
+        </li>
+
+        <li class="check-item" id="check-item-3" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(3)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(3);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag ställde en öppen fråga</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(3);" aria-label="Markera punkt 4 som klarad">Jag klarade detta</button>
+        </li>
+
+        <li class="check-item" id="check-item-4" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(4)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(4);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag lyssnade utan att avbryta</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(4);" aria-label="Markera punkt 5 som klarad">Jag klarade detta</button>
+        </li>
+
+        <li class="check-item" id="check-item-5" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(5)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(5);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag nickade och bekräftade vad kunden sa</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(5);" aria-label="Markera punkt 6 som klarad">Jag klarade detta</button>
+        </li>
+
+        <li class="check-item" id="check-item-6" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(6)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(6);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag talade lugnt och i lagom tempo</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(6);" aria-label="Markera punkt 7 som klarad">Jag klarade detta</button>
+        </li>
+
+        <li class="check-item" id="check-item-7" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(7)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(7);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag höll ögonkontakt (eller tittade på munnen vid behov)</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(7);" aria-label="Markera punkt 8 som klarad">Jag klarade detta</button>
+        </li>
+
+        <li class="check-item" id="check-item-8" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(8)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(8);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag erbjöd mer hjälp</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(8);" aria-label="Markera punkt 9 som klarad">Jag klarade detta</button>
+        </li>
+
+        <li class="check-item" id="check-item-9" tabindex="0" role="checkbox" aria-checked="false"
+            onclick="toggleCheck(9)" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleCheck(9);}">
+          <div class="checkbox" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+          </div>
+          <span class="flex-1 text-base">Jag avslutade med "Tack och ha en bra dag!"</span>
+          <button class="text-xs text-lg-dark hover:underline ml-2" onclick="event.stopPropagation();markMastered(9);" aria-label="Markera punkt 10 som klarad">Jag klarade detta</button>
+        </li>
+
+          </ul>
+        </div>
+      </section>
+
+      <!-- Knowledge Check -->
+      <section id="cm-quiz-section" class="mt-16">
+        <h3 class="text-xl font-semibold text-lb-dark mb-2 flex items-center gap-3">
+          <span class="w-10 h-10 bg-lb text-white rounded-full flex items-center justify-center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9 9c0-2 2-3 3-3s3 1 3 3-3 2-3 4M12 17v.01" stroke-linecap="round"/></svg>
+          </span>
+          Kunskapskontroll
+        </h3>
+        <p class="text-slate-600 mb-6">Testa vad du har lärt dig. Du får svar direkt.</p>
+        <div id="cm-quiz">
+
+          <div class="quiz-question mb-6 p-5 bg-white rounded-2xl border border-slate-200" data-q="0" data-correct="1">
+            <p class="font-semibold text-lb-dark mb-3 text-lg"><span class="text-lg-dark">Fråga 1.</span> Vad är första steget innan kunden kommer?</p>
+            <div role="radiogroup" aria-label="Svarsalternativ">
+              
+            <button class="quiz-option" id="quiz-0-opt-0" onclick="selectQuizOption(0,0)" aria-label="Alternativ A: Sitta och vänta">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">A</span>
+              <span>Sitta och vänta</span>
+            </button>
+
+            <button class="quiz-option" id="quiz-0-opt-1" onclick="selectQuizOption(0,1)" aria-label="Alternativ B: Stå upp, andas, le">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">B</span>
+              <span>Stå upp, andas, le</span>
+            </button>
+
+            <button class="quiz-option" id="quiz-0-opt-2" onclick="selectQuizOption(0,2)" aria-label="Alternativ C: Ringa sin chef">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">C</span>
+              <span>Ringa sin chef</span>
+            </button>
+
+            <button class="quiz-option" id="quiz-0-opt-3" onclick="selectQuizOption(0,3)" aria-label="Alternativ D: Börja ropa efter kunden">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">D</span>
+              <span>Börja ropa efter kunden</span>
+            </button>
+
+            </div>
+            <div id="quiz-feedback-0" class="hidden mt-3 p-3 rounded-lg" role="alert"></div>
+          </div>
+
+          <div class="quiz-question mb-6 p-5 bg-white rounded-2xl border border-slate-200" data-q="1" data-correct="1">
+            <p class="font-semibold text-lb-dark mb-3 text-lg"><span class="text-lg-dark">Fråga 2.</span> Varför är öppna frågor bättre än ja/nej-frågor?</p>
+            <div role="radiogroup" aria-label="Svarsalternativ">
+              
+            <button class="quiz-option" id="quiz-1-opt-0" onclick="selectQuizOption(1,0)" aria-label="Alternativ A: De är snabbare">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">A</span>
+              <span>De är snabbare</span>
+            </button>
+
+            <button class="quiz-option" id="quiz-1-opt-1" onclick="selectQuizOption(1,1)" aria-label="Alternativ B: De får kunden att känna sig hörd">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">B</span>
+              <span>De får kunden att känna sig hörd</span>
+            </button>
+
+            <button class="quiz-option" id="quiz-1-opt-2" onclick="selectQuizOption(1,2)" aria-label="Alternativ C: De gör kunden förvirrad">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">C</span>
+              <span>De gör kunden förvirrad</span>
+            </button>
+
+            <button class="quiz-option" id="quiz-1-opt-3" onclick="selectQuizOption(1,3)" aria-label="Alternativ D: De är lättare att svara på">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">D</span>
+              <span>De är lättare att svara på</span>
+            </button>
+
+            </div>
+            <div id="quiz-feedback-1" class="hidden mt-3 p-3 rounded-lg" role="alert"></div>
+          </div>
+
+          <div class="quiz-question mb-6 p-5 bg-white rounded-2xl border border-slate-200" data-q="2" data-correct="1">
+            <p class="font-semibold text-lb-dark mb-3 text-lg"><span class="text-lg-dark">Fråga 3.</span> Vad betyder "att bekräfta" det kunden säger?</p>
+            <div role="radiogroup" aria-label="Svarsalternativ">
+              
+            <button class="quiz-option" id="quiz-2-opt-0" onclick="selectQuizOption(2,0)" aria-label="Alternativ A: Att säga emot">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">A</span>
+              <span>Att säga emot</span>
+            </button>
+
+            <button class="quiz-option" id="quiz-2-opt-1" onclick="selectQuizOption(2,1)" aria-label="Alternativ B: Att nicka och säga "Jag förstår"">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">B</span>
+              <span>Att nicka och säga "Jag förstår"</span>
+            </button>
+
+            <button class="quiz-option" id="quiz-2-opt-2" onclick="selectQuizOption(2,2)" aria-label="Alternativ C: Att avsluta samtalet">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">C</span>
+              <span>Att avsluta samtalet</span>
+            </button>
+
+            <button class="quiz-option" id="quiz-2-opt-3" onclick="selectQuizOption(2,3)" aria-label="Alternativ D: Att skrika högt">
+              <span class="font-bold text-lb-dark w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">D</span>
+              <span>Att skrika högt</span>
+            </button>
+
+            </div>
+            <div id="quiz-feedback-2" class="hidden mt-3 p-3 rounded-lg" role="alert"></div>
+          </div>
+
+          <div class="quiz-question mb-6 p-5 bg-white rounded-2xl border border-slate-200" data-q="3" data-type="text">
+            <label for="quiz-input-3" class="font-semibold text-lb-dark mb-3 text-lg block"><span class="text-lg-dark">Fråga 4.</span> Skriv en hälsningsfras som du kan använda i möte med kund:</label>
+            <textarea id="quiz-input-3" rows="3" class="w-full p-3 border-2 border-slate-200 rounded-lg focus:border-lb focus:outline-none" placeholder="Skriv ditt svar här..." onchange="saveQuizText(3,this.value)"></textarea>
+            <p class="text-xs text-slate-500 mt-2">Detta är en öppen fråga utan rätt eller fel svar — det viktiga är att du tänker själv.</p>
+          </div>
+
+          <div class="flex items-center justify-between mt-6 flex-wrap gap-3">
+            <div id="cm-quiz-result" class="text-lg font-semibold text-lb-dark" aria-live="polite"></div>
+            <button id="cm-quiz-submit" class="btn-primary" onclick="submitQuiz()">Visa mitt resultat</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ====== TEACHER OVERVIEW ====== -->
+  <section id="cm-teacher" class="py-16 md:py-20 bg-blue-50/40 border-y border-blue-100" aria-labelledby="teacher-title">
+    <div class="max-w-5xl mx-auto px-4">
+      <p class="text-sm font-semibold text-lb-dark uppercase tracking-wider mb-2">För lärare</p>
+      <h2 id="teacher-title" class="text-3xl md:text-4xl font-bold text-lb-dark mb-4">Pedagogiskt stöd</h2>
+      <p class="text-slate-600 mb-10 max-w-3xl">Modulen är designad för att fungera självständigt i klassrummet, vid APL och hemma.</p>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-lb-dark mb-3">Läroplanskoppling (GY25)</h3>
+          <ul class="text-sm text-slate-700 space-y-1">
+            <li>• Service och bemötande, ämnesområde 1</li>
+            <li>• Kommunikation i yrkeslivet</li>
+            <li>• Yrkesetik och kundrelationer</li>
+            <li>• Anpassning till olika kunder</li>
+          </ul>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-lb-dark mb-3">Använd i klassrum & APL</h3>
+          <ul class="text-sm text-slate-700 space-y-1">
+            <li>• <strong>Före APL:</strong> Eleven gör hela modulen själv</li>
+            <li>• <strong>På APL:</strong> Eleven använder checklistan dagligen</li>
+            <li>• <strong>I klass:</strong> Diskutera de öppna frågorna</li>
+            <li>• Ta ca 45-60 min totalt första gången</li>
+          </ul>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-lb-dark mb-3">Bedömningsstöd</h3>
+          <ul class="text-sm text-slate-700 space-y-1">
+            <li>• <strong>E:</strong> Eleven kan utföra steg 1-3 självständigt</li>
+            <li>• <strong>C:</strong> Eleven kan alla 5 steg + reflektera</li>
+            <li>• <strong>A:</strong> Eleven kan anpassa till olika kunder</li>
+            <li>• Spara checklistor som elevdokumentation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== LEARNER CARDS ====== -->
+  <section class="py-16 md:py-20 bg-white" aria-labelledby="learner-title">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 id="learner-title" class="text-3xl md:text-4xl font-bold text-lb-dark mb-4 text-center">Så hjälper modulen olika elever</h2>
+      <p class="text-slate-600 mb-12 text-center max-w-2xl mx-auto">Varje sektion är designad med tre elevgrupper i åtanke. Anpassningarna fungerar för alla.</p>
+      <div class="grid md:grid-cols-3 gap-6">
+        <article class="p-7 bg-blue-50/50 rounded-2xl border-2 border-blue-100 hover:shadow-lg transition-shadow">
+          <div class="w-14 h-14 bg-lb text-white rounded-xl flex items-center justify-center mb-5">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-lb-dark mb-3">För elever med autism</h3>
+          <ul class="text-slate-700 space-y-2 text-sm">
+            <li>✓ Förutsägbar struktur i varje steg</li>
+            <li>✓ Lugn färgpalett utan starka stimuli</li>
+            <li>✓ Tydliga fraser att lära sig utantill</li>
+            <li>✓ Eleven styr takten själv</li>
+            <li>✓ Inga oväntade ljud eller animationer</li>
+          </ul>
+        </article>
+        <article class="p-7 bg-green-50/50 rounded-2xl border-2 border-green-100 hover:shadow-lg transition-shadow">
+          <div class="w-14 h-14 bg-lg text-white rounded-xl flex items-center justify-center mb-5">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9c0-3 2-7 7-7s7 4 7 7-2 4-2 7-1 4-3 4-3-2-3-4-2-3-3-3-3 1-3 3-1 4-3 4S2 17 2 13s2-3 2-4z" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-lb-dark mb-3">För elever med hörselnedsättning</h3>
+          <ul class="text-slate-700 space-y-2 text-sm">
+            <li>✓ Synkade undertexter på all video</li>
+            <li>✓ Full transkription tillgänglig</li>
+            <li>✓ Visuella ledtrådar i alla steg</li>
+            <li>✓ Justerbar uppspelningshastighet</li>
+            <li>✓ Tips om munavläsning och tydlighet</li>
+          </ul>
+        </article>
+        <article class="p-7 bg-amber-50/50 rounded-2xl border-2 border-amber-100 hover:shadow-lg transition-shadow">
+          <div class="w-14 h-14 bg-amber-600 text-white rounded-xl flex items-center justify-center mb-5">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9c-1.5 0-3-.5-4-1l-5 1 1-5c-1-1-1-3-1-4z" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-lb-dark mb-3">För elever med språkstörning</h3>
+          <ul class="text-slate-700 space-y-2 text-sm">
+            <li>✓ Förenklat språk genomgående</li>
+            <li>✓ Bilder och pictogram stöder texten</li>
+            <li>✓ Repetition och återkoppling i checklistan</li>
+            <li>✓ Konkreta exempel i varje steg</li>
+            <li>✓ Inga komplexa instruktioner</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== NEXT MODULES ====== -->
+  <section class="py-16 md:py-20 bg-slate-50" aria-labelledby="next-title">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 id="next-title" class="text-3xl md:text-4xl font-bold text-lb-dark mb-4">Kommande moduler</h2>
+      <p class="text-slate-600 mb-10 max-w-2xl">Detta är modul 1 av en planerad serie på 8 moduler. Här är de kommande:</p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="p-7 bg-white rounded-2xl border-2 border-slate-200 hover:border-lb transition-colors">
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-3 py-1 bg-lb/10 text-lb-dark rounded-full text-sm font-semibold">Modul 2</span>
+            <span class="text-xs text-slate-500 font-medium">KOMMANDE</span>
+          </div>
+          <h3 class="text-xl font-bold text-lb-dark mb-3">Att förstå kundens behov</h3>
+          <p class="text-slate-600 text-sm mb-4">Lär dig att lyssna mellan raderna, ställa följdfrågor och förstå vad kunden egentligen vill ha — även när hen har svårt att förklara.</p>
+          <ul class="text-sm text-slate-500 space-y-1">
+            <li>• Aktivt lyssnande i praktiken</li>
+            <li>• Följdfrågor och bekräftelse</li>
+            <li>• Att hantera otydliga önskemål</li>
+          </ul>
+        </div>
+        <div class="p-7 bg-white rounded-2xl border-2 border-slate-200 hover:border-lb transition-colors">
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-3 py-1 bg-lg/10 text-lg-dark rounded-full text-sm font-semibold">Modul 3</span>
+            <span class="text-xs text-slate-500 font-medium">KOMMANDE</span>
+          </div>
+          <h3 class="text-xl font-bold text-lb-dark mb-3">Problem och reklamationer</h3>
+          <p class="text-slate-600 text-sm mb-4">Hur du hanterar missnöjda kunder lugnt och professionellt — utan att ta det personligt.</p>
+          <ul class="text-sm text-slate-500 space-y-1">
+            <li>• Att lyssna utan att bli defensiv</li>
+            <li>• Att be om hjälp från kollega</li>
+            <li>• Att skapa en lösning tillsammans</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== FEEDBACK ====== -->
+  <section id="cm-feedback" class="py-16 md:py-20 bg-white border-t border-slate-200" aria-labelledby="feedback-title">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 id="feedback-title" class="text-3xl md:text-4xl font-bold text-lb-dark mb-4">Hjälp oss bli bättre</h2>
+      <p class="text-slate-600 mb-8">Vi bygger detta tillsammans med elever och lärare. Din feedback formar nästa version.</p>
+      <form id="cm-feedback-form" class="space-y-5" onsubmit="submitFeedback(event)">
+        <div>
+          <label for="fb-good" class="block font-semibold text-lb-dark mb-2">Vad fungerade bra?</label>
+          <textarea id="fb-good" rows="3" class="w-full p-3 border-2 border-slate-200 rounded-lg focus:border-lb focus:outline-none" placeholder="Berätta vad som var tydligt eller hjälpsamt..."></textarea>
+        </div>
+        <div>
+          <label for="fb-improve" class="block font-semibold text-lb-dark mb-2">Vad kan förbättras?</label>
+          <textarea id="fb-improve" rows="3" class="w-full p-3 border-2 border-slate-200 rounded-lg focus:border-lb focus:outline-none" placeholder="Var det något som var otydligt, för svårt eller saknades?"></textarea>
+        </div>
+        <div>
+          <label for="fb-next" class="block font-semibold text-lb-dark mb-2">Vad vill du testa härnäst?</label>
+          <select id="fb-next" class="w-full p-3 border-2 border-slate-200 rounded-lg focus:border-lb focus:outline-none">
+            <option value="">Välj ett alternativ</option>
+            <option>Modul 2 — Att förstå kundens behov</option>
+            <option>Modul 3 — Problem och reklamationer</option>
+            <option>Mer video och praktiska exempel</option>
+            <option>Övningar med kollegor / klasskamrater</option>
+            <option>Verktyg för läraren att följa upp</option>
+            <option>Något annat (beskriv ovan)</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <p class="text-xs text-slate-500">Mock-formulär — i prototypen sparas inget data.</p>
+          <button type="submit" class="btn-primary">Skicka feedback</button>
+        </div>
+      </form>
+      <div id="cm-feedback-success" class="feedback-success hidden">
+        <strong>✓ Tack!</strong> Din feedback hjälper oss att göra Lärinsikt bättre.
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="cm-footer bg-lb-dark text-white py-12 mt-0">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <circle cx="20" cy="20" r="20" fill="white" fill-opacity="0.15"/>
+              <path d="M11 20 L18 27 L29 14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="font-bold text-xl">Lärinsikt</span>
+          </div>
+          <p class="text-blue-100 text-sm">Kompetens för framtiden. Yrkesutbildning som passar varje elev.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3">Projektet</h4>
+          <ul class="text-blue-100 text-sm space-y-2">
+            <li>Pilot 2027–2029</li>
+            <li>Drivs av Lärinsikt AB</li>
+            <li>Med stöd från Skolverket (planerat)</li>
+            <li>Open source pedagogik</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3">Kontakt</h4>
+          <ul class="text-blue-100 text-sm space-y-2">
+            <li>info@larinsikt.se</li>
+            <li>+46 8 000 00 00</li>
+            <li>Stockholm, Sverige</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/20 pt-6 flex flex-wrap items-center justify-between gap-3 text-sm">
+        <p class="text-blue-200">© 2026 Lärinsikt AB. Denna prototyp är v0.1 — byggd som grund för 2027–2029-projektet.</p>
+        <p class="text-blue-300 text-xs">Tillgänglighet · Integritet · Cookies</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====== VIDEO MODAL ====== -->
+  <div id="cm-video-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="video-modal-title">
+    <div class="modal-box">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <p class="text-xs uppercase font-semibold text-lg-dark tracking-wider">Video · Modul 1</p>
+          <h2 id="video-modal-title" class="text-2xl font-bold text-lb-dark">Anna möter en kund</h2>
+        </div>
+        <button onclick="closeVideoModal()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-lb-dark" aria-label="Stäng video (Escape)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="relative bg-slate-900 rounded-xl aspect-video mb-4 flex items-center justify-center overflow-hidden">
+        <div class="text-white text-center">
+          <div class="w-20 h-20 mx-auto mb-3 bg-white/10 rounded-full flex items-center justify-center">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <p class="font-semibold">[ Videoplaceholder ]</p>
+          <p class="text-sm text-slate-400 mt-1">Scen: Anna i en butik möter en äldre kund</p>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+          <div class="subtitle-track" id="cm-subtitle" role="region" aria-live="polite">
+            "Hej och välkommen! Vad kan jag hjälpa dig med idag?"
+          </div>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded-xl border border-slate-200 mb-4">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <label for="cm-video-speed" class="font-semibold text-lb-dark text-sm flex items-center gap-2 flex-shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3" stroke-linecap="round"/></svg>
+            Hastighet: <span id="cm-speed-label">1.0x</span>
+          </label>
+          <input type="range" id="cm-video-speed" class="speed-slider flex-1 max-w-xs" min="0.5" max="1.5" step="0.1" value="1" aria-label="Uppspelningshastighet" oninput="setVideoSpeed(this.value)">
+          <button id="cm-pause-toggle" class="btn-tertiary text-sm" onclick="togglePauseHighlight()" aria-pressed="false">
+            Visa pauser tydligare
+          </button>
+        </div>
+      </div>
+      <div id="cm-pause-points" class="space-y-2 mb-4">
+        <h3 class="font-semibold text-lb-dark mb-2">Tre pauspunkter att stanna upp vid:</h3>
+        <div class="pause-marker">
+          <p class="font-semibold text-amber-900">⏸ 0:34 — När Anna ler</p>
+          <p class="text-sm text-slate-700 mt-1">Lägg märke till Annas lugna leende. Det signalerar trygghet.</p>
+        </div>
+        <div class="pause-marker">
+          <p class="font-semibold text-amber-900">⏸ 1:48 — När kunden tvekar</p>
+          <p class="text-sm text-slate-700 mt-1">Anna säger inget. Hon ger kunden tid att tänka. Detta är aktivt lyssnande.</p>
+        </div>
+        <div class="pause-marker">
+          <p class="font-semibold text-amber-900">⏸ 2:55 — Avslutet</p>
+          <p class="text-sm text-slate-700 mt-1">Anna sammanfattar och tackar. Kunden känner sig sedd.</p>
+        </div>
+      </div>
+      <details class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+        <summary class="font-semibold text-lb-dark cursor-pointer">Visa full transkription</summary>
+        <div class="mt-3 space-y-2 text-sm text-slate-700">
+          <p><strong>0:00</strong> [Scenbeskrivning] En lugn butik. Anna står bakom disken.</p>
+          <p><strong>0:08</strong> Anna: "Hej och välkommen! Vad kan jag hjälpa dig med idag?"</p>
+          <p><strong>0:18</strong> Kund: "Hej... jag letar efter något åt min mamma."</p>
+          <p><strong>0:28</strong> Anna nickar och ler. "Vad trevligt. Vet du ungefär vad hon tycker om?"</p>
+          <p><strong>0:34</strong> [PAUS] Annas lugna leende — visar trygghet.</p>
+          <p><strong>0:45</strong> Kund: "Hon gillar... hmm... hon läser mycket."</p>
+          <p><strong>0:55</strong> Anna: "Då har jag flera bra förslag. Får jag visa?"</p>
+          <p><strong>1:48</strong> [PAUS] Anna ger kunden tid att tänka — aktivt lyssnande.</p>
+          <p><strong>2:30</strong> Kund: "Jag tar den här, tack!"</p>
+          <p><strong>2:55</strong> [PAUS] Anna sammanfattar: "Då har vi en bok om trädgård. Behöver du en kasse?"</p>
+          <p><strong>3:10</strong> Anna: "Tack och ha en bra dag! Kom tillbaka om du vill ha tips."</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SECTION: JAVASCRIPT
+       ========================================== -->
+  <script>
+    // ============================================
+    // SECTION: STATE MANAGEMENT
+    // ============================================
+    const AppState = {
+      currentStep: null,
+      expandedStep: null,
+      checklistProgress: new Array(10).fill(false),
+      checklistMastered: new Array(10).fill(false),
+      quizAnswers: {},
+      quizSubmitted: false,
+      teacherView: false,
+      videoModalOpen: false,
+      videoSpeed: 1,
+      showPausePoints: false
+    };
+
+    const STORAGE_KEY = 'larinsikt_v0_1_checklist';
+    const QUIZ_STORAGE = 'larinsikt_v0_1_quiz';
+
+    // ============================================
+    // SECTION: STEP ACCORDION
+    // ============================================
+    function toggleStep(n) {
+      const trigger = document.getElementById(`step-trigger-${n}`);
+      const panel = document.getElementById(`step-panel-${n}`);
+      const circle = document.querySelector(`.step-circle[data-step="${n}"]`);
+      const chevron = trigger.querySelector('.step-chevron');
+      const isOpen = !panel.hidden;
+
+      // Close all other steps for clean focus
+      for (let i = 1; i <= 5; i++) {
+        if (i !== n) {
+          const p = document.getElementById(`step-panel-${i}`);
+          const t = document.getElementById(`step-trigger-${i}`);
+          const c = document.querySelector(`.step-circle[data-step="${i}"]`);
+          const ch = t.querySelector('.step-chevron');
+          if (p) { p.hidden = true; t.setAttribute('aria-expanded', 'false'); c.classList.remove('active'); ch.style.transform = ''; }
+        }
+      }
+
+      panel.hidden = isOpen;
+      trigger.setAttribute('aria-expanded', !isOpen);
+      circle.classList.toggle('active', !isOpen);
+      chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+      AppState.expandedStep = isOpen ? null : n;
+    }
+
+    // ============================================
+    // SECTION: TEACHER VIEW TOGGLE
+    // ============================================
+    function toggleTeacherView() {
+      AppState.teacherView = !AppState.teacherView;
+      const btn = document.getElementById('cm-teacher-toggle');
+      const label = document.getElementById('cm-view-label');
+      btn.setAttribute('aria-pressed', AppState.teacherView);
+      label.textContent = AppState.teacherView ? 'Dölj lärarvy' : 'Visa lärarvy';
+      document.querySelectorAll('[data-teacher-panel]').forEach(p => {
+        p.classList.toggle('visible', AppState.teacherView);
+      });
+    }
+
+    // ============================================
+    // SECTION: CHECKLIST + LOCALSTORAGE + PROGRESS
+    // ============================================
+    function toggleCheck(i) {
+      AppState.checklistProgress[i] = !AppState.checklistProgress[i];
+      const item = document.getElementById(`check-item-${i}`);
+      const isChecked = AppState.checklistProgress[i];
+      item.classList.toggle('checked', isChecked);
+      item.setAttribute('aria-checked', isChecked);
+      const checkbox = item.querySelector('.checkbox');
+      if (isChecked) checkbox.classList.add('check-pop');
+      setTimeout(() => checkbox.classList.remove('check-pop'), 300);
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const done = AppState.checklistProgress.filter(Boolean).length;
+      const text = document.getElementById('check-progress-text');
+      const status = document.getElementById('check-progress-status');
+      const circle = document.getElementById('check-progress-circle');
+      const circumference = 2 * Math.PI * 45; // 283
+      const offset = circumference - (done / 10) * circumference;
+      circle.style.strokeDashoffset = offset;
+      text.textContent = `${done}/10`;
+      if (done === 0) status.textContent = 'Börja kryssa i punkter när du har gjort dem.';
+      else if (done < 5) status.textContent = 'Bra start! Fortsätt i din egen takt.';
+      else if (done < 10) status.textContent = 'Halvvägs där. Du gör det jättebra!';
+      else status.textContent = '🎉 Alla punkter klara! Bra jobbat.';
+    }
+
+    function markMastered(i) {
+      AppState.checklistMastered[i] = true;
+      AppState.checklistProgress[i] = true;
+      const item = document.getElementById(`check-item-${i}`);
+      item.classList.add('checked');
+      item.style.background = '#d1fae5';
+      updateProgress();
+      announceToSR(`Punkt ${i+1} markerad som klarad.`);
+    }
+
+    function saveChecklist() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          progress: AppState.checklistProgress,
+          mastered: AppState.checklistMastered,
+          savedAt: new Date().toISOString()
+        }));
+        announceToSR('Checklista sparad.');
+        showToast('✓ Sparad!');
+      } catch(e) {
+        alert('Kunde inte spara. localStorage kanske är avstängt.');
+      }
+    }
+
+    function loadChecklist() {
+      try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        if (!data) { showToast('Ingen sparad checklista hittad.'); return; }
+        const { progress, mastered } = JSON.parse(data);
+        AppState.checklistProgress = progress || new Array(10).fill(false);
+        AppState.checklistMastered = mastered || new Array(10).fill(false);
+        for (let i = 0; i < 10; i++) {
+          const item = document.getElementById(`check-item-${i}`);
+          item.classList.toggle('checked', AppState.checklistProgress[i]);
+          item.setAttribute('aria-checked', AppState.checklistProgress[i]);
+        }
+        updateProgress();
+        showToast('✓ Laddad!');
+      } catch(e) { showToast('Kunde inte ladda.'); }
+    }
+
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-lg-dark text-white px-5 py-3 rounded-xl shadow-lg z-50';
+      t.setAttribute('role', 'status');
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2500);
+    }
+
+    function announceToSR(msg) {
+      const a = document.createElement('div');
+      a.setAttribute('role','status'); a.setAttribute('aria-live','polite');
+      a.className = 'sr-only';
+      a.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
+      a.textContent = msg;
+      document.body.appendChild(a);
+      setTimeout(() => a.remove(), 1500);
+    }
+
+    // ============================================
+    // SECTION: QUIZ
+    // ============================================
+    function selectQuizOption(qi, oj) {
+      if (AppState.quizSubmitted) return;
+      AppState.quizAnswers[qi] = oj;
+      // Visual selection
+      const opts = document.querySelectorAll(`[id^="quiz-${qi}-opt-"]`);
+      opts.forEach((o, idx) => o.classList.toggle('selected', idx === oj));
+    }
+
+    function saveQuizText(qi, val) {
+      AppState.quizAnswers[qi] = val;
+    }
+
+    function submitQuiz() {
+      AppState.quizSubmitted = true;
+      let score = 0, total = 0;
+      const questions = document.querySelectorAll('.quiz-question');
+      questions.forEach(qd => {
+        const qi = +qd.dataset.q;
+        if (qd.dataset.type === 'text') return;
+        total++;
+        const correct = +qd.dataset.correct;
+        const sel = AppState.quizAnswers[qi];
+        const fb = document.getElementById(`quiz-feedback-${qi}`);
+        const opts = qd.querySelectorAll('.quiz-option');
+        opts.forEach((o, idx) => {
+          o.disabled = true;
+          if (idx === correct) o.classList.add('correct');
+          else if (idx === sel) o.classList.add('incorrect');
+        });
+        if (sel === correct) {
+          score++;
+          fb.className = 'mt-3 p-3 rounded-lg bg-green-50 border border-green-200 text-green-900 font-medium';
+          fb.textContent = '✓ Helt rätt! Bra jobbat.';
+        } else {
+          fb.className = 'mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 font-medium';
+          fb.textContent = sel === undefined ? 'Du valde inget alternativ. Det rätta är markerat.' : 'Inte riktigt. Det rätta alternativet är markerat med grönt.';
+        }
+        fb.classList.remove('hidden');
+      });
+      const result = document.getElementById('cm-quiz-result');
+      const pct = Math.round((score/total)*100);
+      let msg = '';
+      if (pct === 100) msg = `🎉 ${score} av ${total} rätt! Du har koll på allt.`;
+      else if (pct >= 75) msg = `👍 ${score} av ${total} rätt — bra jobbat!`;
+      else if (pct >= 50) msg = `${score} av ${total} rätt. Bra start, läs igenom stegen igen.`;
+      else msg = `${score} av ${total} rätt. Ingen stress — gå igenom stegen och prova igen.`;
+      result.textContent = msg;
+      document.getElementById('cm-quiz-submit').textContent = 'Gjort';
+      document.getElementById('cm-quiz-submit').disabled = true;
+    }
+
+    // ============================================
+    // SECTION: VIDEO MODAL + KEYBOARD
+    // ============================================
+    function openVideoModal() {
+      const m = document.getElementById('cm-video-modal');
+      m.hidden = false;
+      AppState.videoModalOpen = true;
+      document.body.style.overflow = 'hidden';
+      m.querySelector('button').focus();
+    }
+    function closeVideoModal() {
+      const m = document.getElementById('cm-video-modal');
+      m.hidden = true;
+      AppState.videoModalOpen = false;
+      document.body.style.overflow = '';
+    }
+    function setVideoSpeed(v) {
+      AppState.videoSpeed = +v;
+      document.getElementById('cm-speed-label').textContent = `${(+v).toFixed(1)}x`;
+    }
+    function togglePauseHighlight() {
+      AppState.showPausePoints = !AppState.showPausePoints;
+      const btn = document.getElementById('cm-pause-toggle');
+      btn.setAttribute('aria-pressed', AppState.showPausePoints);
+      document.querySelectorAll('.pause-marker').forEach(p => {
+        p.classList.toggle('highlight', AppState.showPausePoints);
+      });
+      btn.firstChild && (btn.lastChild.textContent = AppState.showPausePoints ? ' Dölj pausmarkering' : ' Visa pauser tydligare');
+    }
+
+    // Close modal on ESC; close steps on ESC if no modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (AppState.videoModalOpen) closeVideoModal();
+      }
+    });
+
+    // ============================================
+    // SECTION: FEEDBACK FORM
+    // ============================================
+    function submitFeedback(e) {
+      e.preventDefault();
+      const form = document.getElementById('cm-feedback-form');
+      const success = document.getElementById('cm-feedback-success');
+      form.style.display = 'none';
+      success.classList.remove('hidden');
+      success.scrollIntoView({behavior: 'smooth', block: 'center'});
+      // TODO: Connect to backend
+    }
+
+    // ============================================
+    // SECTION: INIT
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      updateProgress();
+      // Auto-load saved checklist if exists
+      try {
+        if (localStorage.getItem(STORAGE_KEY)) {
+          const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (data && data.progress) {
+            AppState.checklistProgress = data.progress;
+            for (let i = 0; i < 10; i++) {
+              const item = document.getElementById(`check-item-${i}`);
+              if (item && AppState.checklistProgress[i]) {
+                item.classList.add('checked');
+                item.setAttribute('aria-checked', 'true');
+              }
+            }
+            updateProgress();
+          }
+        }
+      } catch(e) { console.warn('Could not load saved state', e); }
+
+      // Open first step automatically for guided start
+      // toggleStep(1);  // commented — let user choose
+    });
+  </script>
+
+  <!-- ==========================================
+       SPLIT SUGGESTIONS FOR KIMI
+       ==========================================
+       
+       Polishing-friendly modules to send to Kimi:
+       
+       1. VIDEO MODAL (id="cm-video-modal")
+          - Replace placeholder with real <video> element
+          - Implement timed subtitle track (WebVTT format)
+          - Add chapter markers tied to pause points
+          - Polish: smoother modal transitions, better mobile layout
+       
+       2. CHECKLIST LOGIC (toggleCheck, saveChecklist, loadChecklist)
+          - Add cloud sync (Supabase later)
+          - Add "share with teacher" feature
+          - Add visual celebration when all 10 done
+          - Add "reset" button with confirmation
+       
+       3. QUIZ ENGINE (selectQuizOption, submitQuiz)
+          - Add per-question hints (revealed after wrong answer)
+          - Add "try again" mode
+          - Track time per question for analytics
+          - Add adaptive difficulty
+       
+       4. STEP ACCORDION (toggleStep)
+          - Add prev/next buttons inside expanded panels
+          - Add progress indicator showing visited steps
+          - Add "auto-advance" mode for first-time users
+       
+       5. TEACHER VIEW
+          - Expand into separate dashboard route later
+          - Add export-to-PDF for student progress
+          - Add classroom mode (multiple students)
+       
+       Easy components to copy-paste as-is:
+       - Hero section
+       - Footer
+       - Learner cards (3-card grid)
+       - Next modules teaser
+       
+       Architecture notes for Kimi/devs:
+       - All component IDs use prefixes: cm- (component), step- (steps), check- (checklist), quiz- (quiz)
+       - State lives in single AppState object — easy to migrate to React useState/Redux
+       - Each major section is wrapped in a <section> with aria-labelledby — easy to extract as React component
+       - localStorage uses versioned keys (larinsikt_v0_1_*) — bump version when schema changes
+       - All Tailwind utility classes — no custom CSS classes that need refactoring
+       - SVG icons are inline — easy to extract to icons.tsx component file
+       
+       Known limitations of v0.1:
+       - No real video (placeholder only)
+       - No backend (localStorage only)
+       - Quiz has only 4 questions
+       - No real auth
+       - Teacher view is preview only
+  -->
+
+  <!-- ekosystem-syskon: hjälpsam, inte spam -->
+  <section class="no-print border-t border-slate-200 bg-white" aria-label="Lärinsikt-ekosystem">
+    <div class="max-w-6xl mx-auto px-4 py-10 text-sm text-slate-600">
+      <p class="font-semibold text-lb-dark mb-2">Lärinsikt AB</p>
+      <p class="mb-4 max-w-2xl">Den här sajten handlar om yrkesmoduler i skolan. Andra sajter i samma bolag har andra roller:</p>
+      <ul class="space-y-2">
+        <li><a class="underline font-medium text-lb" href="https://npmonstret.se/?utm_source=larinsikt&utm_medium=ecosystem&utm_campaign=footer" target="_blank" rel="noopener">npmonstret.se</a> — elevträning inför nationella prov (NPcoachen)</li>
+        <li><a class="underline font-medium text-lb" href="https://npguide.se/?utm_source=larinsikt&utm_medium=ecosystem&utm_campaign=footer" target="_blank" rel="noopener">npguide.se</a> — regler och guider för skolpersonal kring NP</li>
+        <li><a class="underline font-medium text-lb" href="https://npprov.se/?utm_source=larinsikt&utm_medium=ecosystem&utm_campaign=footer" target="_blank" rel="noopener">npprov.se</a> — arkiv med gamla nationella prov och proveniens</li>
+      </ul>
+    </div>
+  </section>
+
+</body>
+</html>
