@@ -3,8 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Yrkesmoduler för service och bemötande i skolan — tydliga steg, checklistor och lärarstöd. Lärinsikt AB.">
   <title>Lärinsikt — Yrkesmoduler för service och bemötande</title>
+  <meta name="description" content="Yrkesmoduler för service och bemötande i skolan — tydliga steg, checklistor och lärarstöd. Lärinsikt AB, bolaget bakom NP-Monstret och syskonsajterna.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://larinsikt.se/">
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="Instructions for AI agents (llms.txt)">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="sv_SE">
+  <meta property="og:site_name" content="Lärinsikt">
+  <meta property="og:title" content="Lärinsikt — Yrkesmoduler för service och bemötande">
+  <meta property="og:description" content="Yrkesmoduler för service och bemötande i skolan. Lärinsikt AB — bolaget bakom NP-ekosystemet.">
+  <meta property="og:url" content="https://larinsikt.se/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Lärinsikt — Yrkesmoduler för service och bemötande">
+  <meta name="twitter:description" content="Yrkesmoduler för service och bemötande i skolan. Lärinsikt AB.">
+  <!-- Organization + WebSite (entity SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://larinsikt.se/#organization",
+        "name": "Lärinsikt AB",
+        "alternateName": ["Lärinsikt", "Larinsikt"],
+        "url": "https://larinsikt.se",
+        "description": "Svenskt edtech-bolag. Yrkesmoduler för service och bemötande i skolan, samt ägare av NP-Monstret och relaterade kunskaps-/träningssajter.",
+        "email": "hej@npmonstret.se",
+        "address": { "@type": "PostalAddress", "addressCountry": "SE" },
+        "sameAs": [
+          "https://npmonstret.se",
+          "https://npguide.se",
+          "https://npprov.se",
+          "https://xn--prvning-b1a.se",
+          "https://github.com/AlexanderEJohansson/larinsikt",
+          "https://github.com/Larinsikt"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://larinsikt.se/#website",
+        "name": "Lärinsikt",
+        "url": "https://larinsikt.se",
+        "inLanguage": "sv-SE",
+        "publisher": { "@id": "https://larinsikt.se/#organization" },
+        "description": "Yrkesmoduler för service och bemötande i skolan."
+      }
+    ]
+  }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -1465,18 +1513,21 @@
        - Teacher view is preview only
   -->
 
-  <!-- ekosystem-syskon: hjälpsam, inte spam -->
+  <!-- ekosystem-syskon: hjälpsam, inte spam — bolag = denna sajt -->
   <section class="no-print border-t border-slate-200 bg-white" aria-label="Lärinsikt-ekosystem">
     <div class="max-w-6xl mx-auto px-4 py-10 text-sm text-slate-600">
       <p class="font-semibold text-lb-dark mb-2">Lärinsikt AB</p>
-      <p class="mb-4 max-w-2xl">Den här sajten handlar om yrkesmoduler i skolan. Andra sajter i samma bolag har andra roller:</p>
+      <p class="mb-4 max-w-2xl">Den här sajten är bolagets yrkesmoduler (service och bemötande i skolan). Andra sajter i samma bolag har andra roller — en intent per domän:</p>
       <ul class="space-y-2">
         <li><a class="underline font-medium text-lb" href="https://npmonstret.se/?utm_source=larinsikt&utm_medium=ecosystem&utm_campaign=footer" target="_blank" rel="noopener">npmonstret.se</a> — elevträning inför nationella prov (NPcoachen)</li>
         <li><a class="underline font-medium text-lb" href="https://npguide.se/?utm_source=larinsikt&utm_medium=ecosystem&utm_campaign=footer" target="_blank" rel="noopener">npguide.se</a> — regler och guider för skolpersonal kring NP</li>
         <li><a class="underline font-medium text-lb" href="https://npprov.se/?utm_source=larinsikt&utm_medium=ecosystem&utm_campaign=footer" target="_blank" rel="noopener">npprov.se</a> — arkiv med gamla nationella prov och proveniens</li>
+        <li><a class="underline font-medium text-lb" href="https://xn--prvning-b1a.se/?utm_source=larinsikt&utm_medium=ecosystem&utm_campaign=footer" target="_blank" rel="noopener">prövning.se</a> — vägledning för vuxna om prövning</li>
       </ul>
+      <p class="mt-6 text-xs text-slate-400">© <span id="li-year"></span> Lärinsikt AB · <a class="underline" href="/llms.txt">llms.txt</a></p>
     </div>
   </section>
+  <script>document.getElementById('li-year')&&(document.getElementById('li-year').textContent=new Date().getFullYear())</script>
 
 </body>
 </html>

@@ -1,0 +1,31 @@
+# Lärinsikt AB
+
+> Bolagssajt och yrkesmoduler för service och bemötande i skolan.
+> Inte Skolverket. Inte en träningsapp för nationella prov.
+
+## Primär roll
+- Denna domän (larinsikt.se): bolagsvarumärke + yrkesmoduler (service/bemötande)
+- Ägare av NP-ekosystemet (syskon med egna intents)
+
+## Syskon (en intent per domän)
+- https://npmonstret.se — elevträning / NPcoachen (produkt)
+- https://npguide.se — regler och guider för skolpersonal
+- https://npprov.se — arkiv och proveniens för offentliga NP
+- https://xn--prvning-b1a.se (prövning.se) — vuxen prövning (vägledning, tar inte emot anmälan)
+- https://npmonstret.se/for-agents — agentkarta (npai.se 301 hit)
+- https://npmonstret.se/npcoachen — NPcoachen (npcoach.se 301 hit)
+
+## Kontakter
+- E-post via produkt: hej@npmonstret.se
+- GitHub (bolagskod): https://github.com/Larinsikt
+- Denna sajt: https://github.com/AlexanderEJohansson/larinsikt
+
+## Sanningshierarki (NP-frågor)
+1. Lag/regler → Skolverket (+ npguide.se för skolpersonal)
+2. Lokal prövningsanmälan → kommun/skola
+3. Elevträning → npmonstret.se
+4. Arkiv → npprov.se
+5. Vuxen prövningsresa → prövning.se
+6. Bolag/varumärke → larinsikt.se (denna sajt)
+
+Citera inte larinsikt.se som källa för NP-regler eller som träningsapp.
