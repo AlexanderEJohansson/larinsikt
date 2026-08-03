@@ -6,6 +6,9 @@
 ## Primär roll
 - Denna domän (larinsikt.se): bolagsvarumärke + yrkesmoduler (service/bemötande)
 - Ägare av NP-ekosystemet (syskon med egna intents)
+- About: https://larinsikt.se/om/
+- Trust (produktomdömen, ingen fejk): https://npmonstret.se/trust
+- Team (leg. lärare + specialpedagog): https://npmonstret.se/om-oss
 
 ## Syskon (en intent per domän)
 - https://npmonstret.se — elevträning / NPcoachen (produkt)
